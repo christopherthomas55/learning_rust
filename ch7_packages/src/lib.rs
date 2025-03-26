@@ -1,46 +1,26 @@
-mod front_of_house {
-    pub mod hosting {
-        pub fn add_to_waitlist() {}
-        fn seat_at_table() {}
-    }
+mod front_of_house;
+mod back_of_house;
 
-    mod serving {
-        fn take_order() {}
-        fn serve_order() {}
-        fn take_payment() {}
-    }
-}
+// Use can be public too, but I'm still a bit unclear why
+pub use crate::front_of_house::hosting;
 
-mod back_of_house {
-    fn fix_incorrect_order() {
-        cook_order();
-        super::deliver_order();
-
-    }
-
-    fn cook_order() {}
-
-    pub struct Breakfast {
-        pub toast: String,
-        seasonal_fruit: String
-    }
-
-    pub enum Appetizer {
-        Soup,
-        Salad
-    }
-
-    impl Breakfast {
-        pub fn summer(toast: &str) -> Breakfast {
-            Breakfast {
-                toast: String::from(toast),
-                seasonal_fruit: String::from("peaches")
-            }
-        }
+mod customer {
+    pub fn eat_at_restautant() {
+        super::hosting::add_to_waitlist();
     }
 }
 
-use crate::front_of_house::hosting;
+// structs and enums are often used without the full path
+use std::collections::HashMap;
+
+fn hash_map() {
+    let mut map = HashMap::new();
+    map.insert(1, 2);
+}
+
+// As syntax...just like python!
+use std::fmt::Result;
+use std::io::Result as IoResult;
 
 
 pub fn eat_at_restautant() {
