@@ -1,0 +1,9 @@
+[package]
+name = "ch9_errors"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[profile.release]
+panic = 'abort' # This  makes binaries smaller by removin cleanup requirement on panic
