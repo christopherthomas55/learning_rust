@@ -10,6 +10,22 @@ pub struct Config {
 
 impl Config {
     // I'm not sure why we put a static liftetime here tbh, maybe for nested errors?
+    pub fn build(mut args: impl Iterator<Item = String>) -> Result<Config, &'static str> {
+        args.next();
+
+        let query = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get query string"),
+        };
+
+        let file_path = match args.next() {
+            Some(arg) => arg,
+            None => return Err("Didn't get file_path"),
+        };
+        let ignore_case = env::var("IGNORE_CASE").is_ok();
+        Ok(Config { query, file_path, ignore_case })
+    }
+    /* Old, pre iterator chapter build code looked like
     pub fn build(args: &[String]) -> Result<Config, &'static str> {
         if args.len() < 3 {
             return Err("Not enough arguments");
@@ -20,7 +36,7 @@ impl Config {
         let file_path = args[2].clone();
         let ignore_case = env::var("IGNORE_CASE").is_ok();
         Ok(Config { query, file_path, ignore_case })
-    }
+    }*/
 }
 
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
@@ -38,6 +54,15 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
+
+fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
+}
+
+/* pre iterator chapter code
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let mut matches: Vec<&str> = vec![];
     for line in contents.lines() {
@@ -47,6 +72,7 @@ fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     }
     matches
 }
+*/
 
 fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
