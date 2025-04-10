@@ -117,8 +117,44 @@ fn drop_example() {
     println!("CustomSmartPointers created");
 }
 
+enum RCList<T> {
+    RCCons(T, Rc<RCList<T>>),
+    RCNil
+}
+
+use self::RCList::{RCCons, RCNil};
+use std::rc::Rc;
+
+fn rc_example() {
+    // Reference counter
+    // Lets us allocate to heap when we don't know at compile time which part will finish with
+    // data last
+    // We use the cons list again to demonstrate this
+    /* This cannot compile because of ownership rules
+    let a = Cons(1, Box::new(Cons(2, Box::new(Cons(3, Box::new(Nil))))));
+    let b = Cons(3, Box::new(a));
+    let c = Cons(3, Box::new(a));*/
+    // But rc let's us clone references and track 
+    let a = Rc::new(RCCons(1, Rc::new(RCCons(2, Rc::new(RCCons(3, Rc::new(RCNil)))))));
+    // We don't use a.clone() here since we don't need a deep copy
+    println!("count after creating a of refs = {}", Rc::strong_count(&a));
+    let b = RCCons(3, Rc::clone(&a));
+    println!("count after creating b of refs = {}", Rc::strong_count(&a));
+    {
+        let c = RCCons(3, Rc::clone(&a));
+        println!("count after creating c of refs = {}", Rc::strong_count(&a));
+    }
+    println!("count after c goes out of scope of refs = {}", Rc::strong_count(&a));
+
+    // Not that rc is immutable only....
+}
+
+
+use ch15_smart_pointers::refcell_example;
 fn main() {
     box_example();
     deref_trait_example();
     drop_example();
+    rc_example();
+    refcell_example();
 }
