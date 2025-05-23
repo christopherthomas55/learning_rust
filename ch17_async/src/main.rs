@@ -4,5 +4,6 @@ fn main() {
     //concurrency_example_17_2a();
     //concurrency_example_17_2b();
     //concurrency_example_17_2c();
-    streams_a();
+    //streams_a();
+    async_and_threads();
 }

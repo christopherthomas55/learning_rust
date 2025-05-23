@@ -266,3 +266,21 @@ pub fn streams_a() {
         }
     })
 }
+
+pub fn async_and_threads(){
+    // Threads and async can be combined elegantly
+    let (tx, mut rx) = trpl::channel();
+
+    thread::spawn(move || {
+        for i in 1..11 {
+            tx.send(i).unwrap();
+            thread::sleep(Duration::from_secs(1));
+        }
+    });
+
+    trpl::run(async {
+        while let Some(message) = rx.recv().await {
+            println!("{message}");
+        }
+    });
+}
