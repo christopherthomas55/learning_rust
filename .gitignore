@@ -1,1 +1,2 @@
-rust_book/*/target/
+*/target/
+*/*/target/
