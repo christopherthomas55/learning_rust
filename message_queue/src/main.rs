@@ -1,30 +1,26 @@
-use rust_book::ch17_async::*;
-use super;
+//use rust_book::ch17_async::*;
+use message_queue::*;
+use std::cell::RefCell;
 
+// GlobalVars 
 
 fn main() {
-    queues = vec!(queue);
-    PREV = None;
-    // Can add a message to any queue with a hashmap
-    message = Message{0, "test", "success?", PREV};
-    add_message_into(message, queues); // queue is not global so add_message is a weird name
-
-    // Can list all of them
-
-    list_message_queues(queues);
-
-    // get any of them
-    // TODO - Use option here? Is it working
-    if let Some(result) = from_queue_pop(queues, 0){ // TODO Eventually do, mark_read, delete);
-        format!("Success - {result}");
-    } else {
-        format!("Failure - {result}");
-    }
-
-
     
+    // This default thing is pretty cool but I don't know if I did this
+    let app = RefCell::new(MessageApp{..Default::default()});
 
+    // Can add a message to any queue with a hashmap...but it's actually a raw quuee object. Programming is so sick lol
+    // Actually, that's annoying, let's use a hashmap
+    for i in 1..10 {
+        let q_no = if i%2==1 {1} else {i};
+        let m = Message{key: String::from(format!("{q_no}")), msg: String::from(format!("{i}th success?"))};
+        app.borrow_mut().push(m);
+    }
+    // Can list all of them
+    //app.borrow().list_message_queues();
+    println!("{:#?}", app.borrow());
     // And thats it :P
+    // Data Driven programming FTW!
 }
 
 
